@@ -18,6 +18,8 @@ export const Header = styled.View`
     padding-bottom: ${RFValue(19)}px;
 `;
 
+export const Fields = styled.View``;
+
 export const Title = styled.Text`
     color: ${({theme}) => theme.colors.shape};
 
@@ -28,6 +30,11 @@ export const Title = styled.Text`
 export const Form = styled.View`
     flex: 1;
     width: 100%;
-    
+    justify-content: space-between;  
     padding: ${RFValue(24)}px;
+`;
+
+export const TransactionTypes = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
 `;
