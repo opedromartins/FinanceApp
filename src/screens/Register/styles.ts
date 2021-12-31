@@ -39,4 +39,6 @@ export const TransactionTypes = styled.View`
     justify-content: space-between;
 
     margin-top: ${RFValue(8)}px;
+    margin-bottom: ${RFValue(16)}px;
+
 `;
