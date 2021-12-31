@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "../../components/Form/Button";
 import { Input } from "../../components/Form/Input";
 
 import {
@@ -19,8 +20,9 @@ export function Register() {
             <Form>
                 <Input placeholder="Nome"/>
                 <Input placeholder="Preço"/>
-            </Form>
 
+                <Button title="Enviar"/>
+            </Form>
 
         </Container>
     );
