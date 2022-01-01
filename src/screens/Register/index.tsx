@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Modal } from "react-native";
+import { Alert, Keyboard, Modal, TouchableWithoutFeedback } from "react-native";
+import * as Yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Input } from "../../components/Form/Input";
 import { InputForm } from "../../components/Form/InputForm";
 import { useForm } from "react-hook-form";
@@ -23,6 +25,17 @@ interface FormData {
     amount: string;
 }
 
+const schema = Yup.object().shape({
+    name: Yup
+    .string()
+    .required('Nome é obrigatório'),
+    amount: Yup
+    .number()
+    .typeError('Informe um valor numérico')
+    .positive('Informe um valor positivo')
+    .required('Preço é obrigatório'),
+});
+
 export function Register() {
     const [transactionType, setTransactionType] = useState('');
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
@@ -34,8 +47,11 @@ export function Register() {
 
     const {
         control,
-        handleSubmit
-    } = useForm();
+        handleSubmit,
+        formState: { errors }
+    } = useForm({
+        resolver: yupResolver(schema)
+    });
 
     function handleTransactionsTypeSelect(type: 'up' | 'down') {
         setTransactionType(type);
@@ -50,6 +66,13 @@ export function Register() {
     }
 
     function handleRegister(form: FormData){
+        if(!transactionType)
+            return Alert.alert('Selecione o tipo da transação')
+            
+        if(category.key === "category")
+            return Alert.alert('Selecione a categoria')
+
+
         const data = {
             name: form.name,
             amount: form.amount,
@@ -61,63 +84,69 @@ export function Register() {
     
 
     return (
-        <Container>
-            <Header>
-                <Title>Cadastro</Title>
-            </Header>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <Container>
+                <Header>
+                    <Title>Cadastro</Title>
+                </Header>
 
-            <Form>
-                
-                <Fields>
-                    <InputForm
-                        placeholder="Nome"
-                        control={control}
-                        name="name"
-                    />
-                    <InputForm
-                        placeholder="Preço"
-                        control={control}
-                        name="amount"
-                    />
-
-                    <TransactionTypes>
-                        <TransactionTypeButton
-                            type="up"
-                            title="Income"
-                            onPress={() => handleTransactionsTypeSelect('up')}
-                            isActive={transactionType === 'up'}
+                <Form>
+                    
+                    <Fields>
+                        <InputForm
+                            placeholder="Nome"
+                            control={control}
+                            name="name"
+                            autoCapitalize="sentences"
+                            autoCorrect={false}
+                            error={errors.name && errors.name.message}
                             />
-                        <TransactionTypeButton
-                            type="down"
-                            title="Outcome"
-                            onPress={() => handleTransactionsTypeSelect('down')}
-                            isActive={transactionType === 'down'}
-                            
+                        <InputForm
+                            placeholder="Preço"
+                            control={control}
+                            name="amount"
+                            keyboardType="numeric"
+                            error={errors.amount && errors.amount.message}
                         />
-                    </TransactionTypes>
 
-                    <CategorySelectButton
-                    title={category.name}
-                    onPress={handleOpenSelectCategoryModal}
+                        <TransactionTypes>
+                            <TransactionTypeButton
+                                type="up"
+                                title="Income"
+                                onPress={() => handleTransactionsTypeSelect('up')}
+                                isActive={transactionType === 'up'}
+                                />
+                            <TransactionTypeButton
+                                type="down"
+                                title="Outcome"
+                                onPress={() => handleTransactionsTypeSelect('down')}
+                                isActive={transactionType === 'down'}
+                                
+                            />
+                        </TransactionTypes>
+
+                        <CategorySelectButton
+                        title={category.name}
+                        onPress={handleOpenSelectCategoryModal}
+                        />
+
+                    </Fields>
+
+                    <Button
+                        title="Enviar"
+                        onPress={handleSubmit(handleRegister)}
                     />
+                </Form>
 
-                </Fields>
+                <Modal visible={categoryModalOpen}>
+                    <CategorySelect
+                        category={category}
+                        setCategory={setCategory}
+                        closeSelectCategory={handleCloseSetCategoryModal}
 
-                <Button
-                    title="Enviar"
-                    onPress={handleSubmit(handleRegister)}
-                />
-            </Form>
-
-            <Modal visible={categoryModalOpen}>
-                <CategorySelect
-                    category={category}
-                    setCategory={setCategory}
-                    closeSelectCategory={handleCloseSetCategoryModal}
-
-                />
-            </Modal>
-
-        </Container>
+                    />
+                </Modal>
+            </Container>
+        </TouchableWithoutFeedback>
     );
 }
