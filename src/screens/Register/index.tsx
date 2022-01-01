@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Alert, Keyboard, Modal, TouchableWithoutFeedback } from "react-native";
 import * as Yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Input } from "../../components/Form/Input";
 import { InputForm } from "../../components/Form/InputForm";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/Form/Button";
