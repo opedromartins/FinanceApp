@@ -62,6 +62,11 @@ export function Dashboard(){
 
     useEffect(() => {
         loadTransactions();
+
+        // Clear transaction list:
+        /* const dataKey = '@gofinance:transactions';
+        AsyncStorage.removeItem(dataKey); */
+
     }, [])
 
     useFocusEffect(useCallback(() => {
